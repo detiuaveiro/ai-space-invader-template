@@ -1,4 +1,4 @@
-# <img src="assets/logo.svg" alt="logo" width="128" height="128" align="middle"> SI2 - Space Invaders
+# <img src="assets/logo.svg" alt="logo" width="128" height="128" align="middle"> Space Invaders
 
 A Space Invaders game implementation using the `ai-game-framework` (version 1.3.0 or newer).
 Template for the student groups: fork this repository and develop your agent on top of it.
