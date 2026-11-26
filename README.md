@@ -10,6 +10,7 @@ Documentation: <https://detiuaveiro.github.io/ai-space-invader-template/>
 - Dummy agent (random walker/shooter).
 - Manual agent (terminal-based A/D/Space control).
 - Reproducible runs with `--seed`.
+- Three alien attack difficulty modes with `--difficulty`.
 
 ## Game Rules and Difficulty
 - The player moves one cell West or East per action and shoots a laser (0.5 s cooldown).
@@ -21,6 +22,27 @@ Documentation: <https://detiuaveiro.github.io/ai-space-invader-template/>
   - time between dives: 3 s down to 1 s (-0.2 s per wave, -0.005 s per point);
   - simultaneous divers: 1, plus one every two waves, up to 3;
   - from wave 3 the squad has three rows (15 aliens).
+
+### Difficulty Modes
+
+The `--difficulty` option controls which alien attack patterns are available:
+
+- `classic` (default): original homing behavior only.
+- `progressive`: gradually unlocks additional attack patterns as waves advance.
+- `hardcore`: all eight attack patterns are available from wave 1.
+
+| Attack pattern | Progressive unlock wave | Description |
+|---|---:|---|
+| Classic Homing | 1 | Tracks the player above y = 3, then locks onto the last target. |
+| Late Homing | 3 | Tracks the player closer to the ground. |
+| Zigzag | 5 | Alternates horizontal movement during the dive. |
+| Sine Wave | 7 | Uses an oscillating trajectory. |
+| Feint | 10 | Performs a deceptive lateral maneuver. |
+| Accelerating Dive | 13 | Accelerates during the dive. |
+| Laser Dodge | 16 | Reacts to lasers with evasive movement. |
+| Adaptive Hunter | 20 | Combines advanced attack behaviors. |
+
+Previously unlocked patterns remain available. Pattern selection uses the seeded random number generator. The pattern identity is not exposed through the WebSocket state, so agents must infer it from observed movement. The original wave- and score-based difficulty scaling applies in all modes.
 
 ## Setup & Running the Game
 
@@ -53,8 +75,25 @@ Options (`python3 -m server.server --help`):
 | `--port`, `-p` | `8765` | Port of the viewer and of the WebSocket (`/ws`) |
 | `--seed`, `-s` | none | Seed of the numpy random generator; without it the seed comes from system entropy |
 | `--fps`, `-f` | `30` | Simulation frames per second |
+| `--difficulty` | `classic` | Attack pattern mode: `classic`, `progressive`, or `hardcore` |
 
-With a seed, every reset replays the same alien dive sequence.
+With a fixed seed, difficulty mode, and identical actions and simulation timing, runs are reproducible.
+
+Run the server with your preferred difficulty mode:
+
+```bash
+# Classic (original game)
+python3 -m server.server --difficulty classic
+
+# Progressive (gradually unlocked attack patterns)
+python3 -m server.server --difficulty progressive
+
+# Hardcore (all attack patterns from wave 1)
+python3 -m server.server --difficulty hardcore
+
+# Reproducible progressive experiment
+python3 -m server.server --difficulty progressive --seed 42
+```
 
 ### 5. Open the Viewer
 Open your web browser and navigate to:
