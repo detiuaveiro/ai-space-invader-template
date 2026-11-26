@@ -7,7 +7,7 @@ from agents.base_agent import BaseAgent
 
 class RuleBasedAgent(BaseAgent):
 
-    def __init__(self):
+    def __init__(self, server_uri="ws://localhost:8765/ws"):
         super().__init__()
 
         self.previous_positions = {}
@@ -366,4 +366,13 @@ class RuleBasedAgent(BaseAgent):
 
 
 if __name__ == "__main__":
-    asyncio.run(RuleBasedAgent().run())
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--uri",
+        default="ws://localhost:8765/ws"
+    )
+    args = parser.parse_args()
+
+    asyncio.run(RuleBasedAgent(server_uri=args.uri).run())
